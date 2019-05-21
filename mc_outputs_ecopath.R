@@ -27,7 +27,7 @@ require(matrixStats)
 ##################
 
 #set working directory to the folder with the results from MC
-setwd("~/EwE output/mc_mcmc_01")
+setwd("~/EwE output/mc_MC_01")
 
 #loop through subfolders to extract csv files
 files <- list.files(full.names = T, recursive = T, pattern = "biomass_annual.csv")
@@ -44,17 +44,24 @@ rownames(bio_y)<-(paste0("X",i))
 biomass_t<-t(bio_y)
 biomass_mc<-cbind(biomass_mc, biomass_t)
 }
-  # save(biomass_mc, "biomass_mc.RData"))
-  # write.csv(biomass_mc, file="biomass_mc.csv")
+  save(biomass_mc, file="biomass_mc.RData")
+  write.csv(biomass_mc, file="biomass_mc.csv")
 
+
+  
 biomass_mc_mat<-as.matrix(biomass_mc)
+
+#make melted table of MCoutputs to make plots
+NL_df<-melt(NL_mat, variable.name="group", value.name="biomass")
+
+#to make table
 #set quantiles
 probs<-c(0.05,0.5,0.95)
 biomass_mc_mean<-rowMeans2(biomass_mc_mat)
 biomass_mc_quant<-rowQuantiles(biomass_mc_mat, probs=probs)
 biomass_mc_stats<-cbind(biomass_mc_mean, biomass_mc_quant)
 
-  #save(biomass_mc_stats, "biomass_mc_stats.RData"))
-  # write.csv(biomass_mc_stats, file="biomass_mc_stats.csv")
+  save(biomass_mc_stats, file="biomass_mc_stats.RData")
+   write.csv(biomass_mc_stats, file="biomass_mc_stats.csv")
 
 
