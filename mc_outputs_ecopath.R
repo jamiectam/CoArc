@@ -52,6 +52,7 @@ biomass_mc<-cbind(biomass_mc, biomass_t)
 biomass_mc_mat<-as.matrix(biomass_mc)
 
 #make melted table of MCoutputs to make plots
+NL_mat<-biomass_mc_mat
 NL_df<-melt(NL_mat, variable.name="group", value.name="biomass")
 
 #to make table
@@ -63,5 +64,4 @@ biomass_mc_stats<-cbind(biomass_mc_mean, biomass_mc_quant)
 
   save(biomass_mc_stats, file="biomass_mc_stats.RData")
    write.csv(biomass_mc_stats, file="biomass_mc_stats.csv")
-
 
