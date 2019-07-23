@@ -1,0 +1,447 @@
+---
+title: "NLBS mc"
+author: "Jamie C Tam"
+date: "July 17, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+collect NL85 data
+```{r}
+setwd("./mc_NL_mc_1985")
+
+#loop through subfolders to extract csv files
+files <- list.files(full.names = T, recursive = T, pattern = "biomass_annual.csv")
+subfiles<-files[c(T,F)]
+
+nfiles<-length(subfiles)
+#create empty dataframe with rows 1:49 (change if using a different model with differnt number of FGs)
+
+biomass_mc<-data.frame()[1:49,]
+for(i in 1:nfiles){
+biomass<-read.csv(paste(subfiles[[i]]),skip=9,header=TRUE)
+#pulls data from year 1, change by adjusting row number
+bio_y<-biomass[2,-1]
+rownames(bio_y)<-(paste0("X",i))
+biomass_t<-t(bio_y)
+biomass_mc<-cbind(biomass_mc, biomass_t)
+}
+
+NL85_biomass_mc_mat<-as.matrix(biomass_mc)
+
+setwd("..")
+
+NLnames<-c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth", "greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish", "arctic_cod", "other_plankpisc", "american_plaice_L", "american_plaice_S", "thorny_skate", "haddock", "other_Lbenth", "flatfish", "flatfish", "other_Mbenth", "other_Sbenth", "herring", "sandlance", "capelin", "other_plank", "squid", "shrimp", "snowcrab", "kingcrab", "pred_inverts", "dep_inverts", "susp_inverts", "macrozoop", "L_mesozoop", "S_mesozoop", "microzoop", "bacteria", "HNAN", "L_phytoplankton", "S_phytoplankton", "detritus") 
+
+NL85_mat<-NL_biomass_mc_mat
+
+rownames(NL85_mat)<-NLnames
+NL85_mat<-t(NL85_mat)
+NL85_dt<-as.data.table(NL85_mat)
+region<-c(rep("NL", 200))
+year<-c(rep("1985", 200))
+model<-c(rep("NL85", 200))
+NL85_dt<-cbind(NL85_dt, region, year, model)
+
+
+NL85_dt_melt<-melt.data.table(NL85_dt,id=c( "region", "year","model"),variable.name="group", value.name="biomass")
+
+
+save(NL85_dt, file="NL85_biomass_mc_mat.RData")
+save(NL85_dt_melt, file="NL85_biomass_mc_dt.RData")
+
+
+
+
+
+```
+
+gather NL13 data
+```{r}
+setwd("./mc_NL_mc_2013")
+
+#loop through subfolders to extract csv files
+files <- list.files(full.names = T, recursive = T, pattern = "biomass_annual.csv")
+subfiles<-files[c(T,F)]
+
+nfiles<-length(subfiles)
+#create empty dataframe with rows 1:49 (change if using a different model with differnt number of FGs)
+
+biomass_mc<-data.frame()[1:49,]
+for(i in 1:nfiles){
+biomass<-read.csv(paste(subfiles[[i]]),skip=9,header=TRUE)
+#pulls data from year 1, change by adjusting row number
+bio_y<-biomass[2,-1]
+rownames(bio_y)<-(paste0("X",i))
+biomass_t<-t(bio_y)
+biomass_mc<-cbind(biomass_mc, biomass_t)
+}
+
+NL13_biomass_mc_mat<-as.matrix(biomass_mc)
+
+setwd("..")
+
+NLnames<-c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth", "greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish", "arctic_cod", "other_plankpisc", "american_plaice_L", "american_plaice_S", "thorny_skate", "haddock", "other_Lbenth", "flatfish", "flatfish", "other_Mbenth", "other_Sbenth", "herring", "sandlance", "capelin", "other_plank", "squid", "shrimp", "snowcrab", "kingcrab", "pred_inverts", "dep_inverts", "susp_inverts", "macrozoop", "L_mesozoop", "S_mesozoop", "microzoop", "bacteria", "HNAN", "L_phytoplankton", "S_phytoplankton", "detritus") 
+
+NL13_mat<-NL13_biomass_mc_mat
+
+rownames(NL13_mat)<-NLnames
+NL13_mat<-t(NL13_mat)
+NL13_dt<-as.data.table(NL13_mat)
+region<-c(rep("NL", 200))
+year<-c(rep("2013", 200))
+model<-c(rep("NL13", 200))
+NL13_dt<-cbind(NL13_dt, region, year, model)
+
+
+NL13_dt_melt<-melt.data.table(NL13_dt,id=c( "region", "year", "model"),variable.name="group", value.name="biomass")
+
+
+save(NL13_dt, file="NL13_biomass_mc_mat.RData")
+save(NL13_dt_melt, file="NL13_biomass_mc_dt.RData")
+
+```
+
+gather data for BS 85
+```{r}
+setwd("./mc_BS_1985_mc")
+
+#loop through subfolders to extract csv files
+files <- list.files(full.names = T, recursive = T, pattern = "biomass_annual.csv")
+subfiles<-files[c(T,F)]
+
+nfiles<-length(subfiles)
+#create empty dataframe with rows 1:49 (change if using a different model with differnt number of FGs)
+
+biomass_mc<-data.frame()[1:47,]
+for(i in 1:nfiles){
+biomass<-read.csv(paste(subfiles[[i]]),skip=9,header=TRUE)
+#pulls data from year 1, change by adjusting row number
+bio_y<-biomass[2,-1]
+rownames(bio_y)<-(paste0("X",i))
+biomass_t<-t(bio_y)
+biomass_mc<-cbind(biomass_mc, biomass_t)
+}
+
+BS85_biomass_mc_mat<-as.matrix(biomass_mc)
+
+setwd("..")
+
+BSnames<-c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth", "greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish", "arctic_cod", "other_plankpisc","capelin","sandlance","herring", "other_plank","other_Sbenth","flatfish","other_Mbenth",
+ "american_plaice_L", "american_plaice_S","thorny_skate", "haddock", "other_Lbenth", "shrimp", "snowcrab","kingcrab","squid", "pred_inverts", "dep_inverts", "susp_inverts","macrozoop","S_mesozoop","L_mesozoop","S_phytoplankton","L_phytoplankton","bacteria", "microzoop",  "HNAN",   "detritus")
+
+BS85_mat<-BS85_biomass_mc_mat
+
+rownames(BS85_mat)<-BSnames
+BS85_mat<-t(BS85_mat)
+BS85_dt<-as.data.table(BS85_mat)
+region<-c(rep("BS", 200))
+year<-c(rep("1985", 200))
+model<-c(rep("BS85", 200))
+BS85_dt<-cbind(BS85_dt, region, year, model)
+
+
+BS85_dt_melt<-melt.data.table(BS85_dt,id=c( "region", "year", "model"),variable.name="group", value.name="biomass")
+
+
+save(BS85_dt, file="BS85_biomass_mc_mat.RData")
+save(BS85_dt_melt, file="BS85_biomass_mc_dt.RData")
+```
+
+gather data for BS 2013
+```{r}
+setwd("./mc_BS_2013_mc")
+
+#loop through subfolders to extract csv files
+files <- list.files(full.names = T, recursive = T, pattern = "biomass_annual.csv")
+subfiles<-files[c(T,F)]
+
+nfiles<-length(subfiles)
+#create empty dataframe with rows 1:49 (change if using a different model with differnt number of FGs)
+
+biomass_mc<-data.frame()[1:47,]
+for(i in 1:nfiles){
+biomass<-read.csv(paste(subfiles[[i]]),skip=9,header=TRUE)
+#pulls data from year 1, change by adjusting row number
+bio_y<-biomass[2,-1]
+rownames(bio_y)<-(paste0("X",i))
+biomass_t<-t(bio_y)
+biomass_mc<-cbind(biomass_mc, biomass_t)
+}
+
+BS85_biomass_mc_mat<-as.matrix(biomass_mc)
+
+setwd("..")
+
+BSnames<-c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth", "greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish", "arctic_cod", "other_plankpisc","capelin","sandlance","herring", "other_plank","other_Sbenth","flatfish","other_Mbenth",
+ "american_plaice_L", "american_plaice_S","thorny_skate", "haddock", "other_Lbenth", "shrimp", "snowcrab","kingcrab","squid", "pred_inverts", "dep_inverts", "susp_inverts","macrozoop","S_mesozoop","L_mesozoop","S_phytoplankton","L_phytoplankton","bacteria", "microzoop",  "HNAN",   "detritus")
+
+BS13_mat<-BS13_biomass_mc_mat
+
+rownames(BS13_mat)<-NLnames
+BS13_mat<-t(BS13_mat)
+BS13_dt<-as.data.table(BS13_mat)
+region<-c(rep("BS", 200))
+year<-c(rep("2013", 200))
+model<-c(rep("BS13", 200))
+BS13_dt<-cbind(BS13_dt, region, year, model)
+
+
+BS13_dt_melt<-melt.data.table(BS13_dt,id=c( "region", "year", "model"),variable.name="group", value.name="biomass")
+
+
+save(BS13_dt, file="BS13_biomass_mc_mat.RData")
+save(BS13_dt_melt, file="BS13_biomass_mc_dt.RData")
+```
+
+indicators NL85
+
+```{r}
+NL85_ind<-NL85_dt
+
+#guild level biomass
+NL85_ind<-transform(NL85_ind, mm_b=whale_piscivore+whale_zooplanktivore+whale_squideater+ whale_mammaleater+whale_minke+seal_harp+seal_other+seal_other)
+
+NL85_ind<-transform(NL85_ind, seabird_b=seabird_pisc+seabird_plank+seabird_benth)
+
+NL85_ind<-transform(NL85_ind, groundfish_b=atlantic_cod_L+atlantic_cod_S+greenland_halibut+silverhake_pollock+other_Mbenth+other_pisc+flatfish+flatfish+american_plaice_L+american_plaice_S+thorny_skate+haddock+other_Lbenth)
+
+NL85_ind<-transform(NL85_ind, foragefish_b=capelin+sandlance+herring+other_plank+arctic_cod)
+
+NL85_ind<-transform(NL85_ind, invert_b=shrimp+snowcrab+kingcrab)
+
+NL85_ind<-transform(NL85_ind, zoop_b=S_mesozoop+L_mesozoop+microzoop)
+
+NL85_ind<-transform(NL85_ind, phyto_b=S_phytoplankton, L_phytoplankton)
+
+
+NL85_ind<-transform(NL85_ind,total_b=whale_piscivore+whale_zooplanktivore+whale_squideater+ whale_mammaleater+whale_minke+seal_harp+seal_other+seal_other+seabird_pisc+seabird_plank+seabird_benth+greenland_shark+atlantic_cod_L+atlantic_cod_S+greenland_halibut+silverhake_pollock+other_Mbenth+other_pisc+flatfish+flatfish+american_plaice_L+american_plaice_S+thorny_skate+haddock+other_Lbenth+capelin+sandlance+herring+other_plank+arctic_cod+redfish+squid+shirmp+snowcrab+kingcrab+pred_inverts+dep_inverts+susp_inverts+macrozoop+L_mesozoop+S_mesozoop+microzoop+bacteria+HNAN+L_phytoplankton+ S_phytoplankton+ detritus)
+
+NL85_ind<-transform(PDratio=(capelin+sandlance+herring+other_plank)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ flatfish + other_Mbenth))
+
+NL85_ind<-transform(NL85_ind, LHratio=(shrimp+squid+snowcrab)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ flatfish ))
+
+NLnames<-c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth", "greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish", "arctic_cod", "other_plankpisc", "american_plaice_L", "american_plaice_S", "thorny_skate", "haddock", "other_Lbenth", "flatfish", "flatfish", "other_Mbenth", "other_Sbenth", "herring", "sandlance", "capelin", "other_plank", "squid", "shrimp", "snowcrab", "kingcrab", "pred_inverts", "dep_inverts", "susp_inverts", "macrozoop", "L_mesozoop", "S_mesozoop", "microzoop", "bacteria", "HNAN", "L_phytoplankton", "S_phytoplankton", "detritus") 
+```
+
+
+indicators for NL13
+```{r}
+NL13_ind<-NL13_dt
+
+#guild level biomass
+NL13_ind<-transform(NL13_ind, mm_b=whale_piscivore+whale_zooplanktivore+whale_squideater+ whale_mammaleater+whale_minke+seal_harp+seal_other+seal_other)
+
+NL13_ind<-transform(NL13_ind, seabird_b=seabird_pisc+seabird_plank+seabird_benth)
+
+NL13_ind<-transform(NL13_ind, groundfish_b=atlantic_cod_L+atlantic_cod_S+greenland_halibut+silverhake_pollock+other_Mbenth+other_pisc+flatfish+flatfish+american_plaice_L+american_plaice_S+thorny_skate+haddock+other_Lbenth)
+
+NL13_ind<-transform(NL13_ind, foragefish_b=capelin+sandlance+herring+other_plank+arctic_cod)
+
+NL13_ind<-transform(NL13_ind, invert_b=shrimp+snowcrab+kingcrab)
+
+NL13_ind<-transform(NL13_ind, zoop_b=S_mesozoop+L_mesozoop+microzoop)
+
+NL13_ind<-transform(NL13_ind, phyto_b=S_phytoplankton, L_phytoplankton)
+
+
+NL13_ind<-transform(NL13_ind, PDratio=(capelin+sandlance+herring+other_plank)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ flatfish + other_Mbenth))
+
+NL13_ind<-transform(NL13_ind, LHratio=(shrimp+squid+snowcrab)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ flatfish ))
+
+
+```
+
+
+
+indicators for BS85
+```{r}
+BS85_ind<-BS85_dt
+
+#guild level biomass
+BS85_ind<-transform(BS85_ind, mm_b=whale_piscivore+whale_zooplanktivore+whale_squideater+ whale_mammaleater+whale_minke+seal_harp+seal_other)
+
+BS85_ind<-transform(BS85_ind, seabird_b=seabird_pisc+seabird_plank+seabird_benth)
+
+BS85_ind<-transform(BS85_ind, groundfish_b=atlantic_cod_L+atlantic_cod_S+greenland_halibut+silverhake_pollock+other_Mbenth+other_pisc+flatfish+american_plaice_L+american_plaice_S+thorny_skate+haddock+other_Lbenth)
+
+BS85_ind<-transform(BS85_ind, foragefish_b=capelin+sandlance+herring+other_plank+arctic_cod)
+
+BS85_ind<-transform(BS85_ind, invert_b=shrimp+snowcrab+kingcrab)
+
+BS85_ind<-transform(BS85_ind, zoop_b=S_mesozoop+L_mesozoop+microzoop)
+
+BS85_ind<-transform(BS85_ind, phyto_b=S_phytoplankton, L_phytoplankton)
+
+
+BS85_ind<-transform(BS85_ind, PDratio=(capelin+sandlance+herring+other_plank)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ other_Mbenth))
+
+BS85_ind<-transform(BS85_ind, LHratio=(shrimp+squid+snowcrab)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish ))
+```
+
+indicators for BS13
+```{r}
+BS13_ind<-BS13_dt
+
+BS13_ind<-transform(BS13_ind, mm_b=whale_piscivore+whale_zooplanktivore+whale_squideater+ whale_mammaleater+whale_minke+seal_harp+seal_other)
+
+BS13_ind<-transform(BS13_ind, seabird_b=seabird_pisc+seabird_plank+seabird_benth)
+
+BS13_ind<-transform(BS13_ind, groundfish_b=atlantic_cod_L+atlantic_cod_S+greenland_halibut+silverhake_pollock+other_Mbenth+other_pisc+flatfish+american_plaice_L+american_plaice_S+thorny_skate+haddock+other_Lbenth)
+
+BS13_ind<-transform(BS13_ind, foragefish_b=capelin+sandlance+herring+other_plank+arctic_cod)
+
+BS13_ind<-transform(BS13_ind, invert_b=shrimp+snowcrab+kingcrab)
+
+BS13_ind<-transform(BS13_ind, zoop_b=S_mesozoop+L_mesozoop+microzoop)
+
+BS13_ind<-transform(BS13_ind, phyto_b=S_phytoplankton, L_phytoplankton)
+
+
+BS13_ind<-transform(BS13_ind, PDratio=(capelin+sandlance+herring+other_plank)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish+ other_Mbenth))
+
+BS13_ind<-transform(BS13_ind, LHratio=(shrimp+squid+snowcrab)/(atlantic_cod_L+atlantic_cod_S+ greenland_halibut+silverhake_pollock+ other_pisc+ american_plaice_L + american_plaice_S+ thorny_skate + haddock + other_Lbenth + flatfish ))
+```
+
+Graphs
+plots for guld level biomass indicators 
+```{r}
+#guild level biomass
+NL85_glbi<-NL85_ind[,c("phyto_b", "zoop_b", "invert_b", "foragefish_b", "groundfish_b", "seabird_b", "mm_b", "model", "year", "region")]
+
+NL13_glbi<-NL13_ind[,c("phyto_b", "zoop_b", "invert_b", "foragefish_b", "groundfish_b", "seabird_b", "mm_b", "model", "year", "region")]
+
+BS85_glbi<-BS85_ind[,c("phyto_b", "zoop_b", "invert_b", "foragefish_b", "groundfish_b", "seabird_b", "mm_b", "model", "year", "region")]
+
+BS13_glbi<-BS13_ind[,c("phyto_b", "zoop_b", "invert_b", "foragefish_b", "groundfish_b", "seabird_b", "mm_b", "model", "year", "region")]
+
+NLBS_glbi<-rbind(NL85_glbi, NL13_glbi, BS85_glbi, BS13_glbi)
+
+BS13_glbi_melt<-melt.data.table(BS13_glbi,id=c( "region", "year", "model"),variable.name="indicator", value.name="biomass")
+
+NLBS_bind_bplot <- ggplot(NLBS_glbi, aes(x = indicator, y = biomass, fill = model)) +
+        geom_boxplot(alpha=0.7, outlier.shape=NA) +
+        scale_y_continuous(name = "Guild level biomass", limit=c(0, 50))+
+        scale_x_discrete(name = "Functional group") +
+       
+        theme_bw() +
+        theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
+              text = element_text(size = 12, family = "Tahoma"),
+              axis.title = element_text(face="bold"),
+              axis.text.x=element_text(angle=90, size=8),
+              legend.position = "bottom") +
+        scale_fill_brewer(palette = "Accent") +
+        labs(fill = "Region")
+```
+
+NLBS biomass for individual FGs
+```{r}
+NLBS_biomass<-rbind(NL85_dt_melt, NL13_dt_melt, BS85_dt_melt, BS13_dt_melt)
+
+mmsb_b_dt<-NLBS_biomass[biomass %in% c("whale_piscivore", "whale_zooplanktivore", "whale_squideater", "whale_mammaleater", "whale_minke", "seal_harp", "seal_other", "seabird_pisc", "seabird_plank", "seabird_benth"),]
+
+
+fish_b_dt<-NLBS_biomass[biomass %in% c("greenland_shark", "atlantic_cod_L", "atlantic_cod_S", "greenland_halibut", "silverhake_pollock", "other_pisc", "redfish",  "other_plankpisc", "american_plaice_L", "american_plaice_S", "thorny_skate", "haddock", "other_Lbenth", "flatfish", "other_Mbenth", "other_Sbenth", "arctic_cod", "herring", "sandlance", "capelin", "other_plank"),]
+
+
+invertplank_b_dt<-NLBS_biomass[biomass %in% c("squid", "shrimp", "snowcrab", "kingcrab", "pred_inverts", "dep_inverts", "susp_inverts","macrozoop", "L_mesozoop", "S_mesozoop", "microzoop", "bacteria", "HNAN", "L_phytoplankton", "S_phytoplankton", "detritus"),]
+
+  
+
+
+mmsb_b_bplot <- ggplot(mmsb_b_dt, aes(x = group, y = biomass, fill = region)) +
+        geom_boxplot(alpha=0.7, outlier.shape=NA) +
+     labs(x=expression(Functional~group), y=expression(Biomass~(t~km^{-2})))+
+       
+        theme_bw() +
+        theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
+              text = element_text(size = 12, family = "Tahoma"),
+              axis.title = element_text(face="bold"),
+              axis.text.x=element_text(angle=90, size=8),
+              legend.position = "bottom") +
+        scale_fill_brewer(palette = "Accent") +
+        labs(fill = "Region")
+
+invertplank_b_bplot <- ggplot(invertplank_b_dt, aes(x = group, y = biomass, fill = region)) +
+        geom_boxplot(alpha=0.7, outlier.shape=NA) +
+       labs(x=expression(Functional~group), y=expression(Biomass~(t~km^{-2})))+
+       
+        theme_bw() +
+        theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
+              text = element_text(size = 12, family = "Tahoma"),
+              axis.title = element_text(face="bold"),
+              axis.text.x=element_text(angle=90, size=8),
+              legend.position = "bottom") +
+        scale_fill_brewer(palette = "Accent") +
+        labs(fill = "Region")
+
+fish_b_bplot <- ggplot(fish_b_dt, aes(x = group, y = biomass, fill = region)) +
+        geom_boxplot(alpha=0.7, outlier.shape=NA) +
+        labs(x=expression(Functional~group), y=expression(Biomass~(t~km^{-2})))+
+       
+        theme_bw() +
+        theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
+              text = element_text(size = 12, family = "Tahoma"),
+              axis.title = element_text(face="bold"),
+              axis.text.x=element_text(angle=90, size=8),
+              legend.position = "bottom") +
+        scale_fill_brewer(palette = "Accent") +
+        labs(fill = "Region")
+
+
+```
+
+graphs for PD and LHratio 
+```{r}
+NL85_pdlh<-NL85_ind[,c("PDratio","LHratio", "model", "year", "region")]
+
+NL13_pdlh<-NL13_ind[,c("PDratio","LHratio", "model", "year", "region")]
+
+BS85_pdlh<-BS85_ind[,c("PDratio","LHratio", "model", "year", "region")]
+
+BS13_pdlh<-BS13_ind[,c("PDratio","LHratio", "model", "year", "region")]
+
+NLBS_pdlh<-rbind(NL85_pdlh, NL13_pdlh, BS85_pdlh, BS13_pdlh)
+
+
+
+```
+
+gather catches
+```{r}
+region<-c(rep("BS",47))
+BScatch_c<-cbind(BScatch_c, region)
+BScatch_c_melt<-melt(BScatch_c, variable.name="region", value.name="catch")
+colnames(BScatch_c_melt)<-c("group", "region", "trial", "catch")
+
+region<-c(rep("NL", 49))
+NLcatch_c<-cbind(NLcatch_c, region)
+NLcatch_c_melt<-melt(NLcatch_c, variable.name="region", value.name="catch")
+colnames(NLcatch_c_melt)<-c("group", "region", "trial", "catch")
+
+NLBS_catch<-rbind(BScatch_c_melt, NLcatch_c_melt)
+
+
+NLBS_catch_bplot <- ggplot(NLBS_catch, aes(x = group, y = catch, fill = region)) +
+        geom_boxplot(alpha=0.7, outlier.shape=NA) +
+        scale_y_continuous(name = "catch")+
+        scale_x_discrete(name = "Functional group") +
+       
+        theme_bw() +
+        theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
+              text = element_text(size = 12, family = "Tahoma"),
+              axis.title = element_text(face="bold"),
+              axis.text.x=element_text(angle=90, size=8),
+              legend.position = "bottom") +
+        scale_fill_brewer(palette = "Accent") +
+        labs(fill = "Region")
+```
